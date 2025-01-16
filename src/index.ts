@@ -19,6 +19,7 @@ import { serializePath } from '@zondax/ledger-js/dist/bip32'
 import { ResponseError } from '@zondax/ledger-js/dist/responseError'
 
 import {
+  CHAIN_CODE_LEN,
   CHUNK_SIZE,
   CLA,
   INS,
@@ -34,6 +35,7 @@ import {
 } from './consts'
 import {
   AddressResponse,
+  AddressExtendedResponse,
   DiversifierListResponse,
   ExtractSpendResponse,
   FvkResponse,
@@ -85,6 +87,27 @@ export default class ZCashApp extends GenericApp {
       return {
         address,
         addressRaw,
+      }
+    } catch (error) {
+      throw processErrorResponse(error)
+    }
+  }
+
+
+  async getAddressTransparentExtended(path: string, showInScreen = true): Promise<AddressExtendedResponse> {
+    try {
+      const sentToDevice = serializePath(path)
+
+      const p1 = showInScreen ? P1_VALUES.SHOW_ADDRESS_IN_DEVICE : P1_VALUES.ONLY_RETRIEVE
+      const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SECP256K1_EXT, p1, 0, sentToDevice)
+      const response = processResponse(responseBuffer)
+
+      const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
+      const chainCode = response.readBytes(CHAIN_CODE_LEN)
+
+      return {
+        publicKey,
+        chainCode,
       }
     } catch (error) {
       throw processErrorResponse(error)

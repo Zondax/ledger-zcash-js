@@ -19,6 +19,11 @@ export type AddressResponse = {
   addressRaw: Buffer
 }
 
+export type AddressExtendedResponse = {
+  chainCode: Buffer
+  publicKey: Buffer
+}
+
 export type IvkResponse = {
   ivkRaw: Buffer
   defaultDiversifier: Buffer

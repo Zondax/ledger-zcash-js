@@ -21,11 +21,11 @@ export const INS = {
 
   GET_ADDR_SECP256K1: 0x01,
   SIGN_SECP256K1: 0x02,
-  SIGN_SAPLING: 0x12,
 
   GET_DIV_LIST: 0x09,
   GET_ADDR_SAPLING_DIV: 0x10,
   GET_ADDR_SAPLING: 0x11,
+  GET_ADDR_SECP256K1_EXT: 0x12,
   GET_IVK_SAPLING: 0xf0,
   GET_OVK_SAPLING: 0xf1,
   GET_NF_SAPLING: 0xf2,
@@ -51,6 +51,7 @@ export const P2_VALUES = {
 }
 
 export const TRANSPARENT_PK_LEN = 33
+export const CHAIN_CODE_LEN = 32
 export const SAPLING_ADDR_LEN = 43
 export const SAPLING_DIV_LEN = 11
 export const SAPLING_IVK_LEN = 32
