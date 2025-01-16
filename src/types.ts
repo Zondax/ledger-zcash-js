@@ -22,6 +22,8 @@ export type AddressResponse = {
 export type AddressExtendedResponse = {
   chainCode: Buffer
   publicKey: Buffer
+  index: number
+  depth: number
 }
 
 export type IvkResponse = {

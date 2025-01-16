@@ -50,6 +50,8 @@ export const P2_VALUES = {
   TX_VERSION_NU5: 0x05,
 }
 
+export const DEPTH_LEN = 1
+export const INDEX_LEN = 4
 export const TRANSPARENT_PK_LEN = 33
 export const CHAIN_CODE_LEN = 32
 export const SAPLING_ADDR_LEN = 43

@@ -22,6 +22,8 @@ import {
   CHAIN_CODE_LEN,
   CHUNK_SIZE,
   CLA,
+  DEPTH_LEN,
+  INDEX_LEN,
   INS,
   P1_VALUES,
   SAPLING_ADDR_LEN,
@@ -102,12 +104,16 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SECP256K1_EXT, p1, 0, sentToDevice)
       const response = processResponse(responseBuffer)
 
+      const depth = response.readBytes(DEPTH_LEN).readUInt8()
+      const index = response.readBytes(INDEX_LEN).readUint32LE()
       const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
       const chainCode = response.readBytes(CHAIN_CODE_LEN)
 
       return {
         publicKey,
         chainCode,
+        depth, 
+        index,
       }
     } catch (error) {
       throw processErrorResponse(error)
