@@ -34,6 +34,7 @@ import {
   SAPLING_NK_LEN,
   SAPLING_OVK_LEN,
   TRANSPARENT_PK_LEN,
+  VERSION_LEN,
 } from './consts'
 import {
   AddressResponse,
@@ -104,6 +105,7 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SECP256K1_EXT, p1, 0, sentToDevice)
       const response = processResponse(responseBuffer)
 
+      const version = response.readBytes(VERSION_LEN).readUint32LE()
       const depth = response.readBytes(DEPTH_LEN).readUInt8()
       const index = response.readBytes(INDEX_LEN).readUint32LE()
       const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
@@ -114,6 +116,7 @@ export default class ZCashApp extends GenericApp {
         chainCode,
         depth, 
         index,
+        version,
       }
     } catch (error) {
       throw processErrorResponse(error)

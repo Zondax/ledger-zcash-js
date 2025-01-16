@@ -51,6 +51,7 @@ export const P2_VALUES = {
 }
 
 export const DEPTH_LEN = 1
+export const VERSION_LEN = 4
 export const INDEX_LEN = 4
 export const TRANSPARENT_PK_LEN = 33
 export const CHAIN_CODE_LEN = 32
