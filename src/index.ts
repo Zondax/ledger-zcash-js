@@ -61,7 +61,7 @@ export default class ZCashApp extends GenericApp {
         ONLY_RETRIEVE: 0x00,
         SHOW_ADDRESS_IN_DEVICE: 0x01,
       },
-      acceptedPathLengths: [5],
+      acceptedPathLengths: [5, 3],
       chunkSize: CHUNK_SIZE,
     })
 
