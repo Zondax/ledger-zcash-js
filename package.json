@@ -34,7 +34,8 @@
     "upgrade": "bunx npm-check-updates -i"
   },
   "dependencies": {
-    "@zondax/ledger-js": "^0.10.0"
+    "@zondax/ledger-js": "^0.10.0",
+    "bs58": "^6.0.0"
   },
   "devDependencies": {
     "@ledgerhq/hw-transport-mocker": "^6.29.0",

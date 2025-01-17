@@ -17,6 +17,7 @@
 import GenericApp, { INSGeneric, LedgerError, ResponsePayload, Transport, processErrorResponse, processResponse } from '@zondax/ledger-js'
 import { serializePath } from '@zondax/ledger-js/dist/bip32'
 import { ResponseError } from '@zondax/ledger-js/dist/responseError'
+import bs58 from "bs58";
 
 import {
   CHAIN_CODE_LEN,
@@ -108,8 +109,19 @@ export default class ZCashApp extends GenericApp {
       const version = response.readBytes(VERSION_LEN).readUint32LE()
       const depth = response.readBytes(DEPTH_LEN).readUInt8()
       const index = response.readBytes(INDEX_LEN).readUint32LE()
-      const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
       const chainCode = response.readBytes(CHAIN_CODE_LEN)
+      const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
+
+      const start = Buffer.alloc(VERSION_LEN+DEPTH_LEN+INDEX_LEN)
+      start.writeUint32BE(version, 0)
+      start.writeUint8(depth, VERSION_LEN)
+      start.writeUint32BE(index, VERSION_LEN+DEPTH_LEN)
+
+      const resp = Buffer.concat([
+        start,
+        chainCode, 
+        publicKey
+      ])
 
       return {
         publicKey,
@@ -117,6 +129,7 @@ export default class ZCashApp extends GenericApp {
         depth, 
         index,
         version,
+        extendedPk: bs58.encode(resp)
       }
     } catch (error) {
       throw processErrorResponse(error)

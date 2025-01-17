@@ -25,6 +25,7 @@ export type AddressExtendedResponse = {
   version: number
   index: number
   depth: number
+  extendedPk: string
 }
 
 export type IvkResponse = {
