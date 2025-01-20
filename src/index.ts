@@ -27,6 +27,7 @@ import {
   INDEX_LEN,
   INS,
   P1_VALUES,
+  PARENT_FINGERPRINT_LEN,
   SAPLING_ADDR_LEN,
   SAPLING_AK_LEN,
   SAPLING_DIV_LEN,
@@ -108,14 +109,16 @@ export default class ZCashApp extends GenericApp {
 
       const version = response.readBytes(VERSION_LEN).readUint32LE()
       const depth = response.readBytes(DEPTH_LEN).readUInt8()
+      const parentFingerprint = response.readBytes(PARENT_FINGERPRINT_LEN)
       const index = response.readBytes(INDEX_LEN).readUint32LE()
       const chainCode = response.readBytes(CHAIN_CODE_LEN)
       const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
 
-      const start = Buffer.alloc(VERSION_LEN+DEPTH_LEN+INDEX_LEN)
+      const start = Buffer.alloc(VERSION_LEN+DEPTH_LEN+PARENT_FINGERPRINT_LEN+INDEX_LEN)
       start.writeUint32BE(version, 0)
       start.writeUint8(depth, VERSION_LEN)
-      start.writeUint32BE(index, VERSION_LEN+DEPTH_LEN)
+      parentFingerprint.copy(start, VERSION_LEN+DEPTH_LEN)
+      start.writeUint32BE(index, VERSION_LEN+DEPTH_LEN+PARENT_FINGERPRINT_LEN)
 
       const resp = Buffer.concat([
         start,
@@ -129,6 +132,7 @@ export default class ZCashApp extends GenericApp {
         depth, 
         index,
         version,
+        parentFingerprint,
         extendedPk: bs58.encode(resp)
       }
     } catch (error) {
