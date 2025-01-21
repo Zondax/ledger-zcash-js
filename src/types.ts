@@ -53,8 +53,7 @@ export type NullifierResponse = {
 }
 
 export type InitTxResponse = {
-  txdataRaw: Buffer
-  txdata: string
+  txDataHash: Buffer
 }
 
 export type SpendSignatureResponse = {
@@ -87,7 +86,6 @@ export type ExtractSpendResponse = {
   alpha: string
 }
 
-export type SignResponse = {
-  signdataRaw: Buffer
-  signdata: string
+export type CheckAndSignResponse = {
+  builtTxDataHash: Buffer
 }

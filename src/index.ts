@@ -49,7 +49,7 @@ import {
   NullifierResponse,
   OutputDataResponse,
   OvkResponse,
-  SignResponse,
+  CheckAndSignResponse,
   SpendSignatureResponse,
   TransaparentSignatureResponse,
 } from './types'
@@ -357,9 +357,9 @@ export default class ZCashApp extends GenericApp {
   ////////////////////////////////////
   ////////////////////////////////////
 
-  async initNewTx(message: any): Promise<InitTxResponse> {
+  async initNewTx(txData: Buffer): Promise<InitTxResponse> {
     try {
-      const chunks = this.messageToChunks(message)
+      const chunks = this.messageToChunks(txData)
 
       // Add empty chunk to trigger the init/reset
       chunks.unshift(Buffer.alloc(0))
@@ -371,8 +371,7 @@ export default class ZCashApp extends GenericApp {
 
       if (result) {
         return {
-          txdataRaw: result.getCompleteBuffer(),
-          txdata: result.getCompleteBuffer().toString('hex'),
+          txDataHash: result.getCompleteBuffer()
         }
       }
 
@@ -459,7 +458,7 @@ export default class ZCashApp extends GenericApp {
     }
   }
 
-  async checkAndSign(message: any, txVersion: any): Promise<SignResponse> {
+  async checkAndSign(message: Buffer, txVersion: number): Promise<CheckAndSignResponse> {
     try {
       const chunks = this.messageToChunks(message)
 
@@ -473,8 +472,7 @@ export default class ZCashApp extends GenericApp {
 
       if (result) {
         return {
-          signdataRaw: result.getCompleteBuffer(),
-          signdata: result.getCompleteBuffer().toString('hex'),
+          builtTxDataHash: result.getCompleteBuffer()
         }
       }
 
