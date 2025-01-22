@@ -85,13 +85,12 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SECP256K1, p1, 0, sentToDevice)
       const response = processResponse(responseBuffer)
 
-      // FIXME: probably incorrect.. and this should be pk
-      const addressRaw = response.readBytes(TRANSPARENT_PK_LEN)
+      const publicKey = response.readBytes(TRANSPARENT_PK_LEN)
       const address = response.readBytes(response.length()).toString()
 
       return {
         address,
-        addressRaw,
+        publicKey,
       }
     } catch (error) {
       throw processErrorResponse(error)
@@ -149,12 +148,12 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SAPLING, p1, 0, sentToDevice)
       const response = processResponse(responseBuffer)
 
-      const addressRaw = response.readBytes(SAPLING_ADDR_LEN)
+      const publicKey = response.readBytes(SAPLING_ADDR_LEN)
       const address = response.readBytes(response.length()).toString()
 
       return {
         address,
-        addressRaw: addressRaw,
+        publicKey,
       }
     } catch (error) {
       throw processErrorResponse(error)
@@ -175,12 +174,12 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_ADDR_SAPLING_DIV, p1, 0, sentToDevice)
       const response = processResponse(responseBuffer)
 
-      const addressRaw = response.readBytes(SAPLING_ADDR_LEN)
+      const publicKey = response.readBytes(SAPLING_ADDR_LEN)
       const address = response.readBytes(response.length()).toString()
 
       return {
         address,
-        addressRaw: addressRaw,
+        publicKey,
       }
     } catch (error) {
       throw processErrorResponse(error)
@@ -199,14 +198,14 @@ export default class ZCashApp extends GenericApp {
         const errorCodeData = partialResponse.slice(-2)
         const returnCode = errorCodeData[0] * 256 + errorCodeData[1]
 
-        const addressRaw = Buffer.from(partialResponse.slice(0, SAPLING_ADDR_LEN))
+        const publicKey = Buffer.from(partialResponse.slice(0, SAPLING_ADDR_LEN))
         partialResponse = partialResponse.slice(SAPLING_ADDR_LEN)
 
         const address = Buffer.from(partialResponse.slice(0, -2)).toString()
 
         return {
           address,
-          addressRaw: addressRaw,
+          publicKey,
         }
       }, processErrorResponse)
     }
@@ -219,14 +218,14 @@ export default class ZCashApp extends GenericApp {
       const errorCodeData = partialResponse.slice(-2)
       const returnCode = errorCodeData[0] * 256 + errorCodeData[1]
 
-      const addressRaw = Buffer.from(partialResponse.slice(0, TRANSPARENT_PK_LEN))
+      const publicKey = Buffer.from(partialResponse.slice(0, TRANSPARENT_PK_LEN))
       partialResponse = partialResponse.slice(TRANSPARENT_PK_LEN)
 
       const address = Buffer.from(partialResponse.slice(0, -2)).toString()
 
       return {
         address,
-        addressRaw: addressRaw,
+        publicKey,
       }
     }, processErrorResponse)
   }
@@ -242,11 +241,11 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_IVK_SAPLING, 0, 0, sentToDevice, [0x9000])
       const response = processResponse(responseBuffer)
 
-      const ivkRaw = response.readBytes(SAPLING_IVK_LEN)
+      const ivk = response.readBytes(SAPLING_IVK_LEN)
       const defaultDiversifier = response.readBytes(SAPLING_DIV_LEN)
 
       return {
-        ivkRaw,
+        ivk,
         defaultDiversifier: defaultDiversifier,
       }
     } catch (error) {
@@ -262,10 +261,10 @@ export default class ZCashApp extends GenericApp {
       const responseBuffer = await this.transport.send(CLA, INS.GET_OVK_SAPLING, 0, 0, sentToDevice, [0x9000])
       const response = processResponse(responseBuffer)
 
-      const ovkRaw = response.readBytes(SAPLING_OVK_LEN)
+      const ovk = response.readBytes(SAPLING_OVK_LEN)
 
       return {
-        ovkRaw,
+        ovk,
       }
     } catch (error) {
       throw processErrorResponse(error)
@@ -282,14 +281,14 @@ export default class ZCashApp extends GenericApp {
 
       console.log(response.length())
 
-      const akRaw = response.readBytes(SAPLING_AK_LEN)
-      const nkRaw = response.readBytes(SAPLING_NK_LEN)
-      const ovkRaw = response.readBytes(SAPLING_OVK_LEN)
+      const ak = response.readBytes(SAPLING_AK_LEN)
+      const nk = response.readBytes(SAPLING_NK_LEN)
+      const ovk = response.readBytes(SAPLING_OVK_LEN)
 
       return {
-        akRaw,
-        nkRaw,
-        ovkRaw,
+        ak,
+        nk,
+        ovk,
       }
     } catch (error) {
       throw processErrorResponse(error)
@@ -343,9 +342,9 @@ export default class ZCashApp extends GenericApp {
       )
       const response = processResponse(responseBuffer)
 
-      const nfraw = Buffer.from(response.readBytes(SAPLING_NF_LEN))
+      const nf = Buffer.from(response.readBytes(SAPLING_NF_LEN))
 
-      return { nfRaw: nfraw } as NullifierResponse
+      return { nf }
     } catch (error) {
       throw processErrorResponse(error)
     }
@@ -388,9 +387,8 @@ export default class ZCashApp extends GenericApp {
       const response = processResponse(responseBuffer)
 
       return {
-        signatureRaw: response.getCompleteBuffer(),
-        signature: response.getCompleteBuffer().toString('hex'),
-      } as SpendSignatureResponse
+        signature: response.getCompleteBuffer()
+      }
     } catch (error) {
       throw processErrorResponse(error)
     }
@@ -403,9 +401,8 @@ export default class ZCashApp extends GenericApp {
       const response = processResponse(responseBuffer)
 
       return {
-        signatureRaw: response.getCompleteBuffer(),
-        signature: response.getCompleteBuffer().toString('hex'),
-      } as TransaparentSignatureResponse
+        signature: response.getCompleteBuffer()
+      }
     } catch (error) {
       throw processErrorResponse(error)
     }
@@ -422,13 +419,10 @@ export default class ZCashApp extends GenericApp {
 
       const hashseed = response.getAvailableBuffer().length > 0 ? response.getAvailableBuffer() : undefined
       return {
-        rcvRaw: rcv,
-        rseedRaw: rseed,
-        hashSeedRaw: hashseed,
-        rcv: rcv.toString('hex'),
-        rseed: rseed.toString('hex'),
-        hashSeed: hashseed ? hashseed.toString('hex') : undefined,
-      } as OutputDataResponse
+        rcv: rcv,
+        rseed: rseed,
+        hashSeed: hashseed
+      }
     } catch (error) {
       throw processErrorResponse(error)
     }
@@ -445,14 +439,10 @@ export default class ZCashApp extends GenericApp {
       const alpha = response.readBytes(32)
 
       return {
-        key: key.toString('hex'),
-        rcv: rcv.toString('hex'),
-        alpha: alpha.toString('hex'),
-
-        keyRaw: key,
-        rcvRaw: rcv,
-        alphaRaw: alpha,
-      } as ExtractSpendResponse
+        key,
+        rcv,
+        alpha
+      }
     } catch (error) {
       throw processErrorResponse(error)
     }

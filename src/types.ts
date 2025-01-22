@@ -16,7 +16,7 @@
 
 export type AddressResponse = {
   address: string
-  addressRaw: Buffer
+  publicKey: Buffer
 }
 
 export type AddressExtendedResponse = {
@@ -30,18 +30,18 @@ export type AddressExtendedResponse = {
 }
 
 export type IvkResponse = {
-  ivkRaw: Buffer
+  ivk: Buffer
   defaultDiversifier: Buffer
 }
 
 export type OvkResponse = {
-  ovkRaw: Buffer
+  ovk: Buffer
 }
 
 export type FvkResponse = {
-  akRaw: Buffer
-  nkRaw: Buffer
-  ovkRaw: Buffer
+  ak: Buffer
+  nk: Buffer
+  ovk: Buffer
 }
 
 export type DiversifierListResponse = {
@@ -49,7 +49,7 @@ export type DiversifierListResponse = {
 }
 
 export type NullifierResponse = {
-  nfRaw: Buffer
+  nf: Buffer
 }
 
 export type InitTxResponse = {
@@ -57,33 +57,23 @@ export type InitTxResponse = {
 }
 
 export type SpendSignatureResponse = {
-  signatureRaw: Buffer
-  signature: string
+  signature: Buffer
 }
 
 export type TransaparentSignatureResponse = {
-  signatureRaw: Buffer
-  signature: string
+  signature: Buffer
 }
 
 export type OutputDataResponse = {
-  rcvRaw: Buffer
-  rseedRaw: Buffer
-  rcv: string
-  rseed: string
-
-  hashSeedRaw?: Buffer
-  hashSeed?: string
+  rcv: Buffer
+  rseed: Buffer
+  hashSeed?: Buffer
 }
 
 export type ExtractSpendResponse = {
-  keyRaw: Buffer
-  rcvRaw: Buffer
-  alphaRaw: Buffer
-
-  key: string
-  rcv: string
-  alpha: string
+  key: Buffer
+  rcv: Buffer
+  alpha: Buffer
 }
 
 export type CheckAndSignResponse = {
