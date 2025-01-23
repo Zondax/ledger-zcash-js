@@ -36,7 +36,7 @@ describe('ZCashApp', () => {
 
       const response = await app.getNullifierSapling(zip32Account, pos, cm)
 
-      expect(response.nfRaw).toEqual(Buffer.alloc(32))
+      expect(response.nf).toEqual(Buffer.alloc(32))
     })
 
     it('should throw an error if the device returns an error status', async () => {
@@ -64,7 +64,7 @@ describe('ZCashApp', () => {
       const zip32Account = 0x01
       const response = await app.getIvkSapling(zip32Account)
 
-      expect(response.ivkRaw).toEqual(Buffer.alloc(SAPLING_IVK_LEN))
+      expect(response.ivk).toEqual(Buffer.alloc(SAPLING_IVK_LEN))
     })
   })
 
@@ -80,7 +80,7 @@ describe('ZCashApp', () => {
       const zip32Account = 0x01
       const response = await app.getOvkSapling(zip32Account)
 
-      expect(response.ovkRaw).toEqual(Buffer.alloc(SAPLING_OVK_LEN))
+      expect(response.ovk).toEqual(Buffer.alloc(SAPLING_OVK_LEN))
     })
   })
 
@@ -96,9 +96,9 @@ describe('ZCashApp', () => {
       const zip32Account = 0x01
       const response = await app.getFvkSapling(zip32Account)
 
-      expect(response.akRaw).toEqual(Buffer.alloc(SAPLING_AK_LEN))
-      expect(response.nkRaw).toEqual(Buffer.alloc(SAPLING_NK_LEN))
-      expect(response.ovkRaw).toEqual(Buffer.alloc(SAPLING_OVK_LEN))
+      expect(response.ak).toEqual(Buffer.alloc(SAPLING_AK_LEN))
+      expect(response.nk).toEqual(Buffer.alloc(SAPLING_NK_LEN))
+      expect(response.ovk).toEqual(Buffer.alloc(SAPLING_OVK_LEN))
     })
   })
 

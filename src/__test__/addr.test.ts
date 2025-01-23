@@ -34,7 +34,7 @@ describe('ZCashApp', () => {
       const div = Buffer.alloc(SAPLING_DIV_LEN)
       const response = await app.getAddressSamplingFromDiversifier(zip32Account, div)
 
-      expect(response.addressRaw).toEqual(Buffer.alloc(SAPLING_ADDR_LEN))
+      expect(response.publicKey).toEqual(Buffer.alloc(SAPLING_ADDR_LEN))
     })
   })
 
@@ -50,7 +50,7 @@ describe('ZCashApp', () => {
       const zip32Account = 0x01
       const response = await app.getAddressSapling(zip32Account)
 
-      expect(response.addressRaw).toEqual(Buffer.alloc(SAPLING_ADDR_LEN))
+      expect(response.publicKey).toEqual(Buffer.alloc(SAPLING_ADDR_LEN))
     })
   })
 })
